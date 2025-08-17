@@ -69,7 +69,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <h1>Snorlax AI — Let’s Talk”</h1>
+      <h1>Snorlax AI — Let’s Talk</h1>
       <div>
         <textarea
           value={message}
