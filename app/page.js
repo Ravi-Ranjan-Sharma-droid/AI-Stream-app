@@ -101,7 +101,7 @@ export default function Home() {
             marginLeft: "10px",
           }}
         >
-          {loading ? "Thinking..." : "Stream Chat"}
+          {streaming ? "Streaming..." : "Stream"}
         </button>
       </div>
       <div
