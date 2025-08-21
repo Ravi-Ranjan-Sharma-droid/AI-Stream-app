@@ -1,7 +1,6 @@
 "use client";
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import styles from "./page.module.css";
-import { useState } from "react";
 
 export default function Home() {
   const [message, setMessage] = useState("");
@@ -9,6 +8,7 @@ export default function Home() {
   const [streaming, setStreaming] = useState("");
   const [loading, setLoading] = useState("");
   const [streamResponse, setStreamResponse] = useState("");
+  const outputAreaRef = useRef(null);
 
   const handleChat = async () => {
     setLoading(true);
@@ -67,60 +67,45 @@ export default function Home() {
     setStreaming(false);
   };
 
+  // Auto-scroll output as responses stream in
+  useEffect(() => {
+    if (outputAreaRef.current) {
+      outputAreaRef.current.scrollTop = outputAreaRef.current.scrollHeight;
+    }
+  }, [response, streamResponse, streaming]);
+
   return (
     <div className={styles.page}>
-      <h1>Snorlax AI — Let’s Talk</h1>
-      <div>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Enter something"
-          rows={4}
-          style={{
-            width: "100%",
-            marginBottom: "10px",
-            padding: "6px",
-          }}
-        />
-      </div>
-      <div>
-        <button
-          onClick={handleChat}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "orange",
-          }}
-        >
-          {loading ? "Thinking..." : "Send"}
-        </button>
-        <button
-          onClick={handleStreamChat}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "green",
-            marginLeft: "10px",
-          }}
-        >
-          {streaming ? "Streaming..." : "Stream"}
-        </button>
-      </div>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "10px",
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        {response}
-      </div>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          padding: "10px",
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        {streamResponse}
+      <div className={styles.chatLayout}>
+        <h1 className={styles.title}>Snorlax AI — Let’s Talk</h1>
+
+        <div ref={outputAreaRef} className={styles.outputArea}>
+          {response && <div className={styles.panel}>{response}</div>}
+          {streamResponse && (
+            <div className={`${styles.panel} ${styles.streamPanel}`}>{streamResponse}</div>
+          )}
+        </div>
+
+        <div className={styles.promptBar}>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Enter your message..."
+            rows={4}
+            className={styles.textarea}
+          />
+          <div className={styles.controls}>
+            <button
+              onClick={handleChat}
+              className={`${styles.button} ${styles.buttonPrimary}`}
+            >
+              {loading ? "Thinking..." : "Send"}
+            </button>
+            <button onClick={handleStreamChat} className={styles.button}>
+              {streaming ? "Streaming..." : "Stream"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
