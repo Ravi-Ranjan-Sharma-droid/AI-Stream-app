@@ -6,7 +6,18 @@ const openai = new OpenAI({
 });
 export async function POST(request) {
   try {
+    if (!process.env.OPENROUTER_API_KEY) {
+      return Response.json(
+        { error: "Missing OPENROUTER_API_KEY in environment" },
+        { status: 500 }
+      );
+    }
+
     const { message } = await request.json();
+
+    if (!message || typeof message !== "string") {
+      return Response.json({ error: "Invalid 'message'" }, { status: 400 });
+    }
 
     const stream = await openai.chat.completions.create({
       model: "openai/gpt-oss-20b:free",
@@ -38,8 +49,9 @@ export async function POST(request) {
       },
     });
   } catch (error) {
+    const detail = error?.response?.data?.error || error?.message || String(error);
     return Response.json(
-      { error: "Failed to process request" },
+      { error: `Failed to process request: ${detail}` },
       { status: 500 }
     );
   }

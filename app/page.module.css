@@ -55,7 +55,7 @@
 .textarea {
   width: 100%;
   resize: vertical;
-  min-height: 120px;
+  /* min-height: 120px; */
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid var(--gray-alpha-200);
@@ -83,7 +83,7 @@
 .controls {
   display: flex;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .button {
@@ -120,6 +120,7 @@
   background: var(--gray-alpha-100);
   white-space: pre-wrap;
   min-height: 80px;
+  margin-bottom: 12px;
 }
 
 /* Remove old grid; output is now a single scroll area */

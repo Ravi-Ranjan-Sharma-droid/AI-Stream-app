@@ -23,8 +23,12 @@ export default function Home() {
         body: JSON.stringify({ message }),
       });
 
-      const data = await res.json();
-      setResponse(data.response);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setResponse(data.error || "Request failed");
+      } else {
+        setResponse(data.response || "");
+      }
     } catch (error) {
       setResponse(`Error ${error.message}`);
     }
@@ -43,7 +47,12 @@ export default function Home() {
         },
         body: JSON.stringify({ message }),
       });
-
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setStreamResponse(data.error || "Failed to start stream");
+        setStreaming(false);
+        return;
+      }
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
